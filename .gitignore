@@ -1,0 +1,27 @@
+# Исключаем исполняемые файлы
+*.exe
+*.dll
+*.lib
+*.so
+*.vsidx
+*.suo
+
+# Исключаем аудио
+*.wav
+*.mp3
+*.db
+
+# Исключаем модели ИИ
+*.pt
+*.onnx
+*.pkl
+*.bin
+*.json
+
+# Исключаем сборки
+bin/
+obj/
+build/
+.vs/
+Properties/
+models/

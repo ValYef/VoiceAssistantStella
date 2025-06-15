@@ -1,0 +1,15 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Grps.Proto";
+
+service SpeechRecognizer {
+  rpc StreamRecognize(stream AudioChunk) returns (stream RecognizeResponse);
+}
+
+message AudioChunk {
+  bytes audio_data = 1;
+}
+
+message RecognizeResponse {
+  string text = 1;
+}
