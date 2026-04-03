@@ -1,2 +1,10 @@
 vosk
 pyaudio
+fastapi
+pandas
+sentence_transformers
+sklearn.feature_extraction.text
+sklearn.linear_model
+seaborn
+matplotlib
+sklearn.metrics

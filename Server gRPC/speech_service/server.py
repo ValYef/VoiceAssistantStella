@@ -1,8 +1,8 @@
 import grpc
 from concurrent import futures
-from model_loader import ModelLoader
-from speech_service import SpeechRecognizerServicer
-import speech_pb2_grpc
+from speech_service.model_loader import ModelLoader
+from speech_service.service import SpeechRecognizerServicer
+import speech_service.speech_pb2_grpc as speech_pb2_grpc
 
 def serve():
     loader = ModelLoader("models/vosk-model-uk-v3-lgraph")
