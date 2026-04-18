@@ -4,7 +4,7 @@ from speech_service.model_loader import ModelLoader
 from speech_service.service import SpeechRecognizerServicer
 import speech_service.speech_pb2_grpc as speech_pb2_grpc
 
-def serve():
+def server():
     loader = ModelLoader("models/vosk-model-uk-v3-lgraph")
     model = loader.load_model()
 
@@ -16,4 +16,4 @@ def serve():
     server.wait_for_termination()
 
 if __name__ == "__main__":
-    serve()
+    server()

@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  speech:
+    build: ./speech_service
+    ports:
+      - "50051:50051"
+
+  nlu:
+    build: ./nlu_service
+    ports:
+      - "8000:8000"
