@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Channels;
-using System.Threading;
-using System.Threading.Tasks;
-using VoiceAssistant.Grps;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Channels;
+using System.Threading.Tasks;
 using VoiceAssistant.Features.ProcessInterop.Interfaces;
+using VoiceAssistant.Features.Responses;
+using VoiceAssistant.Grps;
 
 namespace VoiceAssistant.Features.ProcessInterop
 {
@@ -20,7 +21,7 @@ namespace VoiceAssistant.Features.ProcessInterop
 
         public bool IsPaused => _isPaused;
 
-        public event EventHandler<string>? OutputReceived;
+        public event EventHandler<ServerResponse> OutputReceived;
         public event EventHandler<string>? ErrorReceived;
         public event EventHandler? ProcessExited;
 
@@ -36,15 +37,23 @@ namespace VoiceAssistant.Features.ProcessInterop
             {
                 await _grpcClient.StreamRecognizeAsync(
                     ReadAudioChunksAsync(token),
-                    text => 
+                    (response) => 
                     {
+                        var serverResponse = new ServerResponse
+                        {
+                            Text = response.Text,
+                            Answer = response.Answer,
+                            Intent = response.Intent,
+                            Confidence = response.Confidence
+                        };
+
                         if (_syncContext != null)
                         {
-                            _syncContext.Post(_ => OutputReceived?.Invoke(this, text), null);
+                            _syncContext.Post(_ => OutputReceived?.Invoke(this, serverResponse), null);
                         }
                         else
                         {
-                            OutputReceived?.Invoke(this, text);
+                            OutputReceived?.Invoke(this, serverResponse);
                         }
                     },
                     token

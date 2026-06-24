@@ -4,7 +4,8 @@ namespace VoiceAssistant.Features.Responses
 {
     public interface IVoiceResponseService
     {
-        void Respond(string recognizedText);
-        Task RespondSafely(string recognizedText);
+        bool IsDuplicate(string answer);
+
+        Task RespondConditionally(string text);
     }
 }

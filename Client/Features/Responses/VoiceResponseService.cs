@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using VoiceAssistant.Features.Audio.AudioPlayer;
 
@@ -9,6 +10,9 @@ namespace VoiceAssistant.Features.Responses
     {
         public bool _isResponding { get; set; } = false;
         private readonly IAudioPlayer _audioPlayer;
+        private string _lastAnswer = "";
+        private DateTime _lastAnswerTime = DateTime.UtcNow;
+        private static readonly Random _rng = new();
 
         private readonly Dictionary<string, List<string>> _responses = new()
         {
@@ -52,7 +56,7 @@ namespace VoiceAssistant.Features.Responses
         {
             _audioPlayer=audioPlayer;
         }
-        public void Respond(string recognizedText)
+        private void Respond(string recognizedText)
         {
             recognizedText = recognizedText.ToLower();
 
@@ -92,7 +96,7 @@ namespace VoiceAssistant.Features.Responses
             // _audioPlayer.PlayRandom(_defaultResponses);
         }
 
-        public async Task RespondSafely(string recognizedText)
+        private async Task RespondSafely(string recognizedText)
         {
             if (_isResponding) return;
 
@@ -107,6 +111,51 @@ namespace VoiceAssistant.Features.Responses
             });
 
             _isResponding = false;
+        }
+        public bool IsDuplicate(string answer)
+        {
+            var now = DateTime.UtcNow;
+
+            var isDuplicate =
+                answer == _lastAnswer &&
+                (now - _lastAnswerTime).TotalSeconds < 3;
+
+            if (!isDuplicate)
+            {
+                _lastAnswer = answer;
+                _lastAnswerTime = now;
+            }
+
+            return isDuplicate;
+        }
+        public async Task RespondConditionally(string text)
+        {
+            ResponseTrigger trigger = DetectTrigger(text);
+
+            switch (trigger)
+            {
+                case ResponseTrigger.Greeting:
+                    await RespondSafely(text);         
+                    break;
+                case ResponseTrigger.Command:
+                    break;                              
+                case ResponseTrigger.Unknown:
+                    if (_rng.Next(100) < 30)            // 30% шанс
+                        await RespondSafely(text);
+                    break;
+            }
+        }
+        private ResponseTrigger DetectTrigger(string text)
+        {
+            var greetings = new[] { "привіт", "до побачення", "добрий" };
+            if (greetings.Any(g => text.Contains(g, StringComparison.OrdinalIgnoreCase)))
+                return ResponseTrigger.Greeting;
+
+            var commands = new[] { "відкрий", "закрий", "запусти" };
+            if (commands.Any(c => text.Contains(c, StringComparison.OrdinalIgnoreCase)))
+                return ResponseTrigger.Command;
+
+            return ResponseTrigger.Unknown;
         }
     }
 }

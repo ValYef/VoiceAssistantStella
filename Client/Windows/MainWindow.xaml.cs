@@ -44,24 +44,32 @@ namespace VoiceAssistant.Windows
 
             _recognizer.OnCommandResult += Recognizer_OnCommandResult;
 
+            _recognizer.OnAnswerReceived += Recognizer_OnAnswerReceived;
+
+            _recognizer.OnIntentRecognized += Recognizer_OnIntentRecognized;
+
             this.Closed += MainWindow_Closed;
         }
+
+        private void Recognizer_OnIntentRecognized(string intent, float confidence)
+        {
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                intentTextBlock.Text = $"Намір: {intent ?? "-"}";
+                confidenceTextBlock.Text = $"Впевненість: {(confidence.ToString("0.00") ?? "-")}";
+            });
+        }
+
         private void UpdateMyButtonContent(bool isListening)
         {
-            myButton.Content = isListening ? "Зупинити слухання" : "Почати слухати";
+            myButton.Content = isListening ? "Зупинити прослуховування" : "Почати прослуховування";
         }
         private async void Recognizer_OnCommandResult(string text)
         {
             DispatcherQueue.TryEnqueue(() =>
             {
+                answerTextBlock.Text = "";
                 commandOutputTextBlock.Text = text;
-            });
-
-            await Task.Delay(10000);
-
-            DispatcherQueue.TryEnqueue(() =>
-            {
-                commandOutputTextBlock.Text = "";
             });
         }
 
@@ -108,6 +116,14 @@ namespace VoiceAssistant.Windows
                 volumeTextBlock.Text = $"Гучність: {volume: 0.00}";
 
                 animatedSphere.Update(volume);
+            });
+        }
+        private void Recognizer_OnAnswerReceived(string answer)
+        {
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                commandOutputTextBlock.Text = "";
+                answerTextBlock.Text = answer;
             });
         }
         private void MainWindow_Closed(object sender, WindowEventArgs args)

@@ -1,4 +1,5 @@
 ﻿using System;
+using VoiceAssistant.Features.Responses;
 
 namespace VoiceAssistant.Features.ProcessInterop.Interfaces
 {
@@ -7,7 +8,7 @@ namespace VoiceAssistant.Features.ProcessInterop.Interfaces
         event Action<string>? OnProcessError;
         event Action? OnProcessExited;
         event Action<string>? OnLogMessage;
-        event Action<string>? OnProcessOutput;
+        event Action<ServerResponse>? OnProcessOutput;
 
         void Start();
     }

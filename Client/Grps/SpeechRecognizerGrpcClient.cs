@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System;
 using System.Diagnostics;
+using VoiceAssistant.Features.Responses;
 
 namespace VoiceAssistant.Grps
 {
@@ -18,7 +19,7 @@ namespace VoiceAssistant.Grps
             var channel=GrpcChannel.ForAddress(serverAddress);
             _client=new SpeechRecognizer.SpeechRecognizerClient(channel);
         }
-        public async Task StreamRecognizeAsync(IAsyncEnumerable<byte[]> audioChunks, Action<string> onTextReceived, CancellationToken cancellationToken = default)
+        public async Task StreamRecognizeAsync(IAsyncEnumerable<byte[]> audioChunks, Action<ServerResponse> onResponse, CancellationToken cancellationToken = default)
         {
             using var call = _client.StreamRecognize();
 
@@ -30,10 +31,20 @@ namespace VoiceAssistant.Grps
                 {
                     await foreach (var response in call.ResponseStream.ReadAllAsync(cancellationToken))
                     {
+                        var text = response.Text ?? "";
+                        var answer = response.Answer ?? "";
+                        var intent = response.Intent ?? "";
+                        var confidence = response.Confidence;
 
-                        if (!string.IsNullOrEmpty(response.Text))
+                        if (!string.IsNullOrEmpty(text) || !string.IsNullOrEmpty(answer))
                         {
-                            onTextReceived(response.Text);
+                            onResponse(new ServerResponse 
+                            { 
+                                Text = text, 
+                                Answer = answer,
+                                Intent = intent,
+                                Confidence = confidence
+                            });
                         }
                     }
                 }

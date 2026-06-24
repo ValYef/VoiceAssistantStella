@@ -25,15 +25,16 @@ namespace Grps.Proto {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChdHcnBzL1Byb3RvL3NwZWVjaC5wcm90byIgCgpBdWRpb0NodW5rEhIKCmF1",
-            "ZGlvX2RhdGEYASABKAwiIQoRUmVjb2duaXplUmVzcG9uc2USDAoEdGV4dBgB",
-            "IAEoCTJKChBTcGVlY2hSZWNvZ25pemVyEjYKD1N0cmVhbVJlY29nbml6ZRIL",
-            "LkF1ZGlvQ2h1bmsaEi5SZWNvZ25pemVSZXNwb25zZSgBMAFCDaoCCkdycHMu",
-            "UHJvdG9iBnByb3RvMw=="));
+            "ZGlvX2RhdGEYASABKAwiVQoRUmVjb2duaXplUmVzcG9uc2USDAoEdGV4dBgB",
+            "IAEoCRIOCgZhbnN3ZXIYAiABKAkSDgoGaW50ZW50GAMgASgJEhIKCmNvbmZp",
+            "ZGVuY2UYBCABKAIySgoQU3BlZWNoUmVjb2duaXplchI2Cg9TdHJlYW1SZWNv",
+            "Z25pemUSCy5BdWRpb0NodW5rGhIuUmVjb2duaXplUmVzcG9uc2UoATABQg2q",
+            "AgpHcnBzLlByb3RvYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Grps.Proto.AudioChunk), global::Grps.Proto.AudioChunk.Parser, new[]{ "AudioData" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Grps.Proto.RecognizeResponse), global::Grps.Proto.RecognizeResponse.Parser, new[]{ "Text" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Grps.Proto.RecognizeResponse), global::Grps.Proto.RecognizeResponse.Parser, new[]{ "Text", "Answer", "Intent", "Confidence" }, null, null, null, null)
           }));
     }
     #endregion
@@ -274,6 +275,9 @@ namespace Grps.Proto {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public RecognizeResponse(RecognizeResponse other) : this() {
       text_ = other.text_;
+      answer_ = other.answer_;
+      intent_ = other.intent_;
+      confidence_ = other.confidence_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -295,6 +299,42 @@ namespace Grps.Proto {
       }
     }
 
+    /// <summary>Field number for the "answer" field.</summary>
+    public const int AnswerFieldNumber = 2;
+    private string answer_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Answer {
+      get { return answer_; }
+      set {
+        answer_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "intent" field.</summary>
+    public const int IntentFieldNumber = 3;
+    private string intent_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Intent {
+      get { return intent_; }
+      set {
+        intent_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "confidence" field.</summary>
+    public const int ConfidenceFieldNumber = 4;
+    private float confidence_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float Confidence {
+      get { return confidence_; }
+      set {
+        confidence_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -311,6 +351,9 @@ namespace Grps.Proto {
         return true;
       }
       if (Text != other.Text) return false;
+      if (Answer != other.Answer) return false;
+      if (Intent != other.Intent) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Confidence, other.Confidence)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -319,6 +362,9 @@ namespace Grps.Proto {
     public override int GetHashCode() {
       int hash = 1;
       if (Text.Length != 0) hash ^= Text.GetHashCode();
+      if (Answer.Length != 0) hash ^= Answer.GetHashCode();
+      if (Intent.Length != 0) hash ^= Intent.GetHashCode();
+      if (Confidence != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Confidence);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -341,6 +387,18 @@ namespace Grps.Proto {
         output.WriteRawTag(10);
         output.WriteString(Text);
       }
+      if (Answer.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Answer);
+      }
+      if (Intent.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Intent);
+      }
+      if (Confidence != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(Confidence);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -355,6 +413,18 @@ namespace Grps.Proto {
         output.WriteRawTag(10);
         output.WriteString(Text);
       }
+      if (Answer.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Answer);
+      }
+      if (Intent.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Intent);
+      }
+      if (Confidence != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(Confidence);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -367,6 +437,15 @@ namespace Grps.Proto {
       int size = 0;
       if (Text.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Text);
+      }
+      if (Answer.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Answer);
+      }
+      if (Intent.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Intent);
+      }
+      if (Confidence != 0F) {
+        size += 1 + 4;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -382,6 +461,15 @@ namespace Grps.Proto {
       }
       if (other.Text.Length != 0) {
         Text = other.Text;
+      }
+      if (other.Answer.Length != 0) {
+        Answer = other.Answer;
+      }
+      if (other.Intent.Length != 0) {
+        Intent = other.Intent;
+      }
+      if (other.Confidence != 0F) {
+        Confidence = other.Confidence;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -406,6 +494,18 @@ namespace Grps.Proto {
             Text = input.ReadString();
             break;
           }
+          case 18: {
+            Answer = input.ReadString();
+            break;
+          }
+          case 26: {
+            Intent = input.ReadString();
+            break;
+          }
+          case 37: {
+            Confidence = input.ReadFloat();
+            break;
+          }
         }
       }
     #endif
@@ -427,6 +527,18 @@ namespace Grps.Proto {
             break;
           case 10: {
             Text = input.ReadString();
+            break;
+          }
+          case 18: {
+            Answer = input.ReadString();
+            break;
+          }
+          case 26: {
+            Intent = input.ReadString();
+            break;
+          }
+          case 37: {
+            Confidence = input.ReadFloat();
             break;
           }
         }

@@ -11,84 +11,100 @@
     >
 
     <Grid Background="#FF1E1E1E">
-        <Grid Margin="20">
+
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
-            <!-- Шапка -->
-            <RowDefinition Height="40"/>
-            <!-- Вивід команди -->
+            <!-- header -->
+            <RowDefinition Height="Auto"/>
+            <!-- answer -->
+            <RowDefinition Height="Auto"/>
+            <!-- commands -->
             <RowDefinition Height="*"/>
-            <!-- Сфера і кнопки -->
+            <!-- main -->
         </Grid.RowDefinitions>
 
-        <!-- Шапка -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" >
+        <!-- HEADER -->
+        <StackPanel Grid.Row="0"
+                Orientation="Horizontal"
+                Spacing="30"
+                VerticalAlignment="Center"
+                Margin="0,0,0,20">
+
             <TextBlock x:Name="volumeTextBlock"
-                       Text="Гучність: 0.00"
-                       FontSize="12"
-                       Foreground="White"
-                       Margin="0,0,10,0"/>
+                   Text="Гучність: 0.00"
+                   FontSize="12"
+                   Foreground="White"/>
+
+            <TextBlock x:Name="intentTextBlock"
+                   Text="Намір: -"
+                   FontSize="12"
+                   Foreground="White"/>
+
+            <TextBlock x:Name="confidenceTextBlock"
+                   Text="Впевненість: -"
+                   FontSize="12"
+                   Foreground="White"/>
         </StackPanel>
 
-        
+        <!-- ANSWER -->
+        <TextBlock Grid.Row="1"
+               x:Name="answerTextBlock"
+               Text="Тут з'являтимуться відповіді"
+               FontSize="18"
+               Foreground="White"
+               TextWrapping="Wrap"
+               TextAlignment="Center"
+               HorizontalAlignment="Center"
+               MaxWidth="700"
+               Margin="0,10,0,10"/>
 
-        <!-- Основна частина -->
-        <Grid Grid.Row="2" Margin="0,10,0,0">
+        <!-- COMMAND -->
+        <TextBlock Grid.Row="2"
+               x:Name="commandOutputTextBlock"
+               Text=""
+               FontSize="16"
+               Foreground="LightGray"
+               TextAlignment="Center"
+               HorizontalAlignment="Center"
+               MaxWidth="700"
+               Margin="0,5,0,10"/>
+
+        <!-- MAIN -->
+        <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                <!-- Сфера -->
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
-                <!-- Текст та кнопки -->
             </Grid.ColumnDefinitions>
 
-            <!-- Анімована сфера -->
+            <!-- СФЕРА -->
             <classes:SphereControl x:Name="animatedSphere"
-                                   Margin="0,0,5,0"
-                                   Grid.Column="0"
-                                   Width="500"
-                                   Height="500"/>
+                               Width="600"
+                               Height="600"
+                               Margin="0,20,20,0"/>
 
-            <!-- Текст результату та кнопка -->
-            <Grid Grid.Column="1"
-                  MinWidth="600"
-                  HorizontalAlignment="Right"
-                  VerticalAlignment="Center"
-                  >
+            <!-- ПРАВАЯ ЧАСТЬ -->
+            <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
+                <ScrollViewer Grid.Row="1">
                     <Button x:Name="myButton"
-                        Grid.Row="0"
                         Click="myButton_Click"
-                        HorizontalAlignment="Stretch"
-                        Content="Почати слухати"
-                    />
-
-                    <ScrollViewer Grid.Row="2"
-                              VerticalScrollBarVisibility="Auto">
+                        Content="Почати прослуховування"
+                        MinWidth="200"
+                        HorizontalAlignment="Center"/>
+                </ScrollViewer>
+                
+                <ScrollViewer Grid.Row="2">
                     <TextBlock x:Name="myTextBlock"
-                               Text="Результат розпізнавання з’явиться тут..."
-                               TextWrapping="Wrap"
-                               Foreground="White"
-                               VerticalAlignment="Top"/>
+                           TextWrapping="Wrap"
+                           Foreground="White"
+                           TextAlignment="Center"/>
                 </ScrollViewer>
             </Grid>
         </Grid>
-        </Grid>
-
-        <!-- Вивід команд -->
-        <TextBlock Grid.Row="1"
-           x:Name="commandOutputTextBlock"
-           Text="Тут з'являтимуться команди"
-           FontSize="18"
-           Foreground="White"
-           HorizontalAlignment="Center"
-           VerticalAlignment="Top"
-           TextWrapping="Wrap"
-           Padding="10"
-           Margin="0,50,0,5"/>
     </Grid>
 </Window>

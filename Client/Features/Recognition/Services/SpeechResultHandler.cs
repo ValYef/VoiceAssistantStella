@@ -27,24 +27,24 @@ namespace VoiceAssistant.Classes.Recognition
             _responseService = new VoiceResponseService(_audioPlayer);
         }
 
-        public async Task<bool> HandleAsync(
-            string message,
+        public async Task HandleAsync(
+            string text,
+            string answer,
             Action<string> onRecognized,
-            Action<string> onCommandResult)
+            Action<string> onCommandResult,
+            Action<string> onAnswerReceived)
         {
-            if (!_parser.TryParseText(message, out var parsedText))
-                return false;
-
-            if (_parser.IsDuplicate(parsedText))
-                return false;
-
-            Debug.WriteLine($"[Handle] {message}");
-
             try
             {
-                onRecognized?.Invoke(parsedText);
 
-                _responseService.RespondSafely(parsedText);
+                if (!_parser.TryParseText(text, out var parsedText))
+                    return;
+
+                if (parsedText.Length <= 3 || _parser.IsDuplicate(parsedText))
+                    return;
+
+                onRecognized?.Invoke(parsedText);
+                _responseService.RespondConditionally(parsedText);
 
                 var result = await _adapter.ExecuteCommandAsync(parsedText);
 
@@ -52,13 +52,14 @@ namespace VoiceAssistant.Classes.Recognition
                 {
                     onCommandResult?.Invoke(result);
                 }
-
-                return true;
+                else if (!string.IsNullOrWhiteSpace(answer))
+                {
+                    onAnswerReceived?.Invoke(answer);
+                }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Command error: {ex.Message}");
-                return false;
             }
         }
     }

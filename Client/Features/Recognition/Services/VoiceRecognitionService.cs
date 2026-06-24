@@ -3,6 +3,7 @@ using System.Diagnostics;
 using VoiceAssistant.Classes.Recognition;
 using VoiceAssistant.Features.ProcessInterop.Interfaces;
 using VoiceAssistant.Features.Recognition.Interfaces;
+using VoiceAssistant.Features.Responses;
 
 namespace VoiceAssistant.Features.Recognition.Services
 {
@@ -18,6 +19,8 @@ namespace VoiceAssistant.Features.Recognition.Services
         public event Action<string>? OnRecognitionStopped;
         public event Action<double>? OnVolumeChanged;
         public event Action<string>? OnCommandResult;
+        public event Action<string>? OnAnswerReceived;
+        public event Action<string, float>? OnIntentRecognized;
 
         public bool IsModelReady { get; private set; }
 
@@ -89,7 +92,7 @@ namespace VoiceAssistant.Features.Recognition.Services
         {
             try
             {
-                await _speechHandler.HandleAsync(text, OnSpeechRecognized, OnCommandResult);
+                OnSpeechRecognized?.Invoke(text);
             }
             catch (Exception ex)
             {
@@ -97,9 +100,31 @@ namespace VoiceAssistant.Features.Recognition.Services
             }
         }
 
-        private async void HandleOutput(string output)
+        private async void HandleOutput(ServerResponse response)
         {
-            HandleTextRecognized(output);
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(response.Text))
+                {
+                    OnSpeechRecognized?.Invoke(response.Text);
+                }
+
+                OnIntentRecognized?.Invoke(response.Intent, response.Confidence);
+
+                
+
+                await _speechHandler.HandleAsync(
+                    response.Text,
+                    response.Answer,
+                    OnSpeechRecognized,
+                    OnCommandResult,
+                    OnAnswerReceived
+                );
+            }
+            catch (Exception ex)
+            {
+                HandleProcessError($"Exception: {ex.Message}");
+            }
         }
 
         private void HandleProcessError(string error)

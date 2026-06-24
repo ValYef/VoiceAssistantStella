@@ -7,7 +7,7 @@ namespace VoiceAssistant.Features.Commands
 {
     public class CommandServiceProcessAdapter : ICommandServiceAdapter
     {
-        private readonly string _commandServicePath = "\"C:\\Users\\lera6\\Documents\\Навчання\\3 курс\\ТП\\Курсова\\VoiceAssistant Stella\\CommandServiceApp\\bin\\Debug\\net8.0\\CommandServiceApp.exe\"";
+        private readonly string _commandServicePath = "\"C:\\Users\\lera6\\Documents\\Навчання\\3 курс\\ТП\\Курсова\\VoiceAssistantStella\\CommandServiceApp\\bin\\Debug\\net8.0\\CommandServiceApp.exe\"";
         public async Task<string?> ExecuteCommandAsync(string recognizedText)
         {
             return await SendCommandAsync(recognizedText);

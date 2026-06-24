@@ -22,6 +22,7 @@ using Microsoft.Graphics.Canvas.UI.Xaml;
 using Microsoft.Graphics.Canvas.Effects;
 using Microsoft.Graphics.Canvas;
 using System.Net.NetworkInformation;
+using System.Diagnostics;
 
 namespace VoiceAssistant.Components.Sphere
 {
@@ -32,6 +33,7 @@ namespace VoiceAssistant.Components.Sphere
         private SphereAnimator _animator;
 
         private const int RingCount = 90;
+        private double _maxObservedVolume = 0.001;
 
         public SphereControl()
         {
@@ -46,8 +48,12 @@ namespace VoiceAssistant.Components.Sphere
         }
         public void Update(double volume)
         {
-            double smoothedVolume = _animator.GetSmoothedVolume(volume);
+            if (volume > _maxObservedVolume)
+                _maxObservedVolume = volume;
 
+            double normalized = Math.Clamp(volume / _maxObservedVolume, 0.0, 1.0);
+
+            double smoothedVolume = _animator.GetSmoothedVolume(volume);
             _animator?.UpdateScaleAndSpeed(smoothedVolume);
         }
     }

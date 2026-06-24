@@ -18,6 +18,12 @@
 *.bin
 *.json
 
+*.csv
+*.npy
+
+*.manifest
+*.appxmanifest
+
 # Исключаем сборки
 bin/
 obj/
@@ -25,3 +31,8 @@ build/
 .vs/
 Properties/
 models/
+
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd

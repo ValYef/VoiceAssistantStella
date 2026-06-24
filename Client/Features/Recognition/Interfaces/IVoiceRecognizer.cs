@@ -8,6 +8,8 @@ namespace VoiceAssistant.Features.Recognition.Interfaces
         event Action<string> OnRecognitionStopped;
         event Action<double> OnVolumeChanged;
         event Action<string>? OnCommandResult;
+        event Action<string>? OnAnswerReceived;
+        event Action<string, float>? OnIntentRecognized;
 
         bool IsModelReady { get; }
 

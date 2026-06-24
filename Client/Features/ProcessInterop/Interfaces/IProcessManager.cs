@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
+using VoiceAssistant.Features.Responses;
 
 namespace VoiceAssistant.Features.ProcessInterop.Interfaces
 {
     public interface IProcessManager:IDisposable
     {
-        event EventHandler<string> OutputReceived;
+        event EventHandler<ServerResponse> OutputReceived;
         event EventHandler<string> ErrorReceived;
         event EventHandler ProcessExited;
 

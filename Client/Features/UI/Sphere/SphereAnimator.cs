@@ -8,6 +8,7 @@ using System.Linq;
 using System.Numerics;
 using Windows.UI;
 using Microsoft.Graphics.Canvas.Effects;
+using System.Diagnostics;
 
 namespace VoiceAssistant.Components.Sphere
 {
@@ -24,7 +25,10 @@ namespace VoiceAssistant.Components.Sphere
         private readonly string[] _colors = { "#f3172d", "#ff8300", "#f2f735", "#49fb35", "#49fb35", "#ae2de3" };
 
         private Queue<double> _volumeHistory = new();
-        private const int _smoothingWindow = 5;
+        private const int _smoothingWindow = 3;
+
+        private float _currentScale = 1f;
+        private float _lastTargetScale = 1f;
 
         public SphereAnimator(Compositor compositor, Visual sphereVisual, UIElement ellipseTemplate, Canvas canvas)
         {
@@ -87,9 +91,16 @@ namespace VoiceAssistant.Components.Sphere
 
         public void Animate()
         {
+            _sphereVisual.CenterPoint = new Vector3(
+                (float)_canvas.Width / 2,
+                (float)_canvas.Height / 2,
+                0f);
+            _sphereVisual.Scale = new Vector3(1f, 1f, 1f);
+
+            _currentScale = 1f;
+
             StartWaveAnimation();
         }
-
         private void StartWaveAnimation()
         {
             if (_rings == null || _rings.Count == 0) return;
@@ -125,20 +136,32 @@ namespace VoiceAssistant.Components.Sphere
         public void UpdateScaleAndSpeed(double volume)
         {
             volume = Math.Clamp(volume, 0.0, 1.0);
-            float scaleFactor = 1f + (float)(volume * 0.5);
 
-            var scaleAnimation = _compositor.CreateVector3KeyFrameAnimation();
-            scaleAnimation.InsertKeyFrame(0f, _sphereVisual.Scale);
-            scaleAnimation.InsertKeyFrame(1f, new Vector3(scaleFactor, scaleFactor, 1f));
-            scaleAnimation.Duration = TimeSpan.FromMilliseconds(200);
-            scaleAnimation.IterationBehavior = AnimationIterationBehavior.Count;
-            scaleAnimation.IterationCount = 1;
+            float targetScale = 1f + (float)(volume * 1.5);
 
-            _sphereVisual.CenterPoint = new Vector3((float)_canvas.Width / 2, (float)_canvas.Height / 2, 0);
-            _sphereVisual.StartAnimation("Scale", scaleAnimation);
+            if (Math.Abs(targetScale - _lastTargetScale) > 0.02f)
+            {
+                _lastTargetScale = targetScale;
+
+                var easing = _compositor.CreateCubicBezierEasingFunction(
+                    new Vector2(0.0f, 0.0f),
+                    new Vector2(0.3f, 1.0f));
+
+                var scaleAnimation = _compositor.CreateVector3KeyFrameAnimation();
+
+                scaleAnimation.InsertKeyFrame(0f, new Vector3(_currentScale, _currentScale, 1f));
+                scaleAnimation.InsertKeyFrame(1f, new Vector3(targetScale, targetScale, 1f), easing);
+                scaleAnimation.Duration = TimeSpan.FromMilliseconds(200);
+                scaleAnimation.StopBehavior = AnimationStopBehavior.SetToFinalValue;
+
+                _sphereVisual.StartAnimation("Scale", scaleAnimation);
+
+                _currentScale = targetScale;
+            }
 
             float amplitude = 0.2f + (float)volume * 0.8f;
             _propertySet?.InsertScalar("waveAmplitude", amplitude);
+
             float multiplier = 1f + (float)volume * 3f;
             _propertySet?.InsertScalar("waveSpeedMultiplier", multiplier);
         }

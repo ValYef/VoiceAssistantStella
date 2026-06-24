@@ -1,5 +1,6 @@
 ﻿using System;
 using VoiceAssistant.Features.ProcessInterop.Interfaces;
+using VoiceAssistant.Features.Responses;
 
 namespace VoiceAssistant.Features.ProcessInterop
 {
@@ -10,7 +11,7 @@ namespace VoiceAssistant.Features.ProcessInterop
         public event Action<string>? OnProcessError;
         public event Action? OnProcessExited;
         public event Action<string>? OnLogMessage;
-        public event Action<string>? OnProcessOutput;
+        public event Action<ServerResponse>? OnProcessOutput;
 
         public GrpcProcessCoordinator(IProcessManager processManager)
         {
@@ -23,19 +24,20 @@ namespace VoiceAssistant.Features.ProcessInterop
 
         public void Start() => _processManager.StartProcess();
 
-        private void HandleOutputReceived(object? sender, string text)
+        private void HandleOutputReceived(object? sender, ServerResponse response)
         {
-            var type = ClassifyMessage(text);
+            var type = ClassifyMessage(response.Text);
+
             switch (type)
             {
                 case MessageType.Log:
-                    OnLogMessage?.Invoke(text);
+                    OnLogMessage?.Invoke(response.Text);
                     break;
                 case MessageType.Error:
-                    OnProcessError?.Invoke(text);
+                    OnProcessError?.Invoke(response.Text);
                     break;
                 default:
-                    OnProcessOutput?.Invoke(text);
+                    OnProcessOutput?.Invoke(response);
                     break;
             }
         }
