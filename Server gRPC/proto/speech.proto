@@ -11,4 +11,6 @@ message AudioChunk {
 message RecognizeResponse {
   string text = 1;
   string answer = 2;
+  string intent = 3;
+  float confidence = 4;
 }

@@ -1,1 +1,4 @@
+grpcio
+grpcio-tools
 vosk
+requests

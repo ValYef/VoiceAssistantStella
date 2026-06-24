@@ -3,10 +3,14 @@ version: "3.9"
 services:
   speech:
     build: ./speech_service
+    volumes:
+      - ./speech_service:/app
     ports:
       - "50051:50051"
 
   nlu:
     build: ./nlu_service
+    volumes:
+      - ./nlu_service:/app
     ports:
       - "8000:8000"

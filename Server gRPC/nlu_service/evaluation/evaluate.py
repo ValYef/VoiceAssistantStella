@@ -7,10 +7,12 @@ from sklearn.metrics.pairwise import cosine_similarity
 from collections import Counter
 from service import NLUService
 from data_loader import load_data
+import os
+import numpy as np
 
 dataset_path = "C:\\Users\\lera6\\Documents\\Навчання\\3 курс\\ТП\\Курсова\\VoiceAssistantStella\\Server gRPC\\nlu_service\\data\\dataset_civic_terms.csv"
 
-def split_data(questions, intents, test_size=0.2):
+def split_data(questions, intents, test_size=0.3):
     data = list(zip(questions, intents))
     random.shuffle(data)
     split_idx = int(len(data) * (1 - test_size))
@@ -63,16 +65,16 @@ def evaluate():
     questions_list = questions
     intents_list = intents
 
-    questions_embeddings = nlu.model_bert.model.encode(
+    questions_embeddings = nlu.get_or_create_embeddings(
+        nlu.model_bert.model,
         questions_list,
-        batch_size=32,
-        show_progress_bar=True
+        cache_path="dataset_embeddings.npy"
     )
 
     queries_embeddings = nlu.model_bert.model.encode(
         q_test,
-        batch_size=32,
-        show_progress_bar=True
+        batch_size=64,
+        show_progress_bar=False
     )
 
     sims_matrix = cosine_similarity(queries_embeddings, questions_embeddings)
@@ -91,6 +93,19 @@ def evaluate():
     print("BERT Accuracy:", bert_acc)
     print("BERT F1-score:", bert_f1)
     print("BERT Time:", bert_time)
+    
+    # Tokenization Example
+    example_text = q_test[0]
+    print("\n=== Tokenization Example ===")
+    print("Original text:", example_text)
+
+    # TF-IDF tokenization (simple split)
+    tfidf_tokens = example_text.lower().split()
+    print("TF-IDF tokens:", tfidf_tokens)
+
+    # BERT WordPiece tokenization
+    bert_tokens = nlu.model_bert.model.tokenizer.tokenize(example_text)
+    print("BERT WordPiece tokens:", bert_tokens)
 
     plot_confusion_matrices(i_test, tfidf_preds, bert_preds)
 
