@@ -1,3 +1,6 @@
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,12 +9,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
 using VoiceAssistant.Classes.Recognition;
 using VoiceAssistant.Features.ProcessInterop;
 using VoiceAssistant.Features.Recognition.Interfaces;
 using VoiceAssistant.Features.Recognition.Services;
 using VoiceAssistant.Grps;
+using WinRT.Interop;
 
 namespace VoiceAssistant.Windows
 {
@@ -24,6 +27,12 @@ namespace VoiceAssistant.Windows
         public MainWindow()
         {
             InitializeComponent();
+
+            var hwnd = WindowNative.GetWindowHandle(this);
+            var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+            var appWindow = AppWindow.GetFromWindowId(windowId);
+
+            appWindow.SetIcon("Assets/icon.ico");
 
             var grpcClient = new SpeechRecognizerGrpcClient("http://localhost:50051");
             var processManager = new StreamingGrpcProcessManager(grpcClient);

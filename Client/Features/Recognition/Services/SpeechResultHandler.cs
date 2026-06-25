@@ -15,6 +15,7 @@ namespace VoiceAssistant.Classes.Recognition
         private readonly ICommandServiceAdapter _adapter;
         private readonly IVoiceResponseService _responseService;
         private readonly IAudioPlayer _audioPlayer;
+        private bool _commandResultReceivedForCurrentRequest = false;
 
         public SpeechResultHandler(
             IOutputParser? parser=null,
@@ -36,12 +37,20 @@ namespace VoiceAssistant.Classes.Recognition
         {
             try
             {
+                if (!string.IsNullOrWhiteSpace(answer))
+                {
+                    if (!_commandResultReceivedForCurrentRequest)
+                        onAnswerReceived?.Invoke(answer);
+                    return;
+                }
 
                 if (!_parser.TryParseText(text, out var parsedText))
                     return;
 
                 if (parsedText.Length <= 3 || _parser.IsDuplicate(parsedText))
                     return;
+
+                _commandResultReceivedForCurrentRequest = false;
 
                 onRecognized?.Invoke(parsedText);
                 _responseService.RespondConditionally(parsedText);
@@ -50,11 +59,8 @@ namespace VoiceAssistant.Classes.Recognition
 
                 if (!string.IsNullOrWhiteSpace(result))
                 {
+                    _commandResultReceivedForCurrentRequest = true;
                     onCommandResult?.Invoke(result);
-                }
-                else if (!string.IsNullOrWhiteSpace(answer))
-                {
-                    onAnswerReceived?.Invoke(answer);
                 }
             }
             catch (Exception ex)

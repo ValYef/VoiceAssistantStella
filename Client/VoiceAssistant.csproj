@@ -18,15 +18,16 @@
     <Content Remove="Features\Responses\Files\sound_loading_success.wav" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Assets\icon.ico" />
     <None Remove="Assets\SplashScreen.scale-200.png" />
     <None Remove="Assets\Square150x150Logo.scale-200.png" />
     <None Remove="Assets\Square44x44Logo.scale-200.png" />
     <None Remove="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <None Remove="Assets\StoreLogo.png" />
+    <None Remove="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Features\Responses\Files\good.wav" />
     <Content Include="Features\Responses\Files\hello_imStella_how_r_u.wav" />
     <Content Include="Features\Responses\Files\hello_im_stella_ur_name.wav" />
@@ -34,7 +35,6 @@
     <Content Include="Features\Responses\Files\im_okay_how_r_u.wav" />
     <Content Include="Features\Responses\Files\im_voice_assistant_stella_hope_to_help_you.wav" />
     <Content Include="Features\Responses\Files\okay.wav" />
-    <Content Include="Features\Responses\Files\okey.wav" />
     <Content Include="Features\Responses\Files\opening_browser.wav" />
     <Content Include="Features\Responses\Files\opening_calculator.wav" />
     <Content Include="Features\Responses\Files\please_speak_ukrainian.wav" />
@@ -79,6 +79,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Features\UI\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="Assets\icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <!--
